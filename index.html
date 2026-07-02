@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imara Precast and Concrete — Monthly report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --concrete:#E7E3D8; --concrete-dark:#C9C3B3; --ink:#2A2822; --ink-soft:#6B6659;
+    --card:#FAF8F3; --rust:#B5502E; --rust-dark:#8A3A1F; --steel:#4A5A5E; --line:#D8D3C4;
+    --good:#3B6B4A; --good-bg:#E6EFE7; --bad-bg:#F5E5DE;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--concrete);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:32px 20px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--ink);padding-bottom:16px;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+  header h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;margin:0}
+  header p{margin:4px 0 0;color:var(--ink-soft);font-size:13px;text-transform:uppercase;letter-spacing:0.08em}
+  .btn-ghost{font-family:'IBM Plex Sans',sans-serif;font-size:12px;padding:5px 12px;background:transparent;border:1px solid var(--concrete-dark);color:var(--ink-soft);cursor:pointer;border-radius:2px}
+  .btn-ghost:hover{border-color:var(--ink);color:var(--ink)}
+  .btn-primary{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;background:var(--rust);color:#fff;border:none;padding:9px 18px;cursor:pointer;border-radius:2px}
+  .btn-primary:hover{background:var(--rust-dark)}
+  .control-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+  .control-row select{height:36px;border:1px solid var(--concrete-dark);background:#fff;padding:0 10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;border-radius:2px}
+  .empty{padding:60px 20px;text-align:center;color:var(--ink-soft);font-size:14px;background:var(--card);border:1px solid var(--line)}
+  .lock-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .lock-card{background:var(--card);border:1px solid var(--line);padding:32px 28px;max-width:340px;width:100%;text-align:center}
+  .lock-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;margin:0 0 8px}
+  .lock-sub{font-size:13px;color:var(--ink-soft);margin:0 0 18px;line-height:1.5}
+  .lock-card input{width:100%;text-align:center;font-family:'IBM Plex Mono',monospace;letter-spacing:0.3em;margin-bottom:12px;border:1px solid var(--concrete-dark);height:36px;border-radius:2px}
+  .lock-card button{width:100%;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;background:var(--rust);color:#fff;border:none;padding:10px 20px;cursor:pointer;border-radius:2px}
+  .status{font-size:12px;color:var(--rust);margin-top:6px}
+
+  /* report */
+  #report{background:#fff;border:1px solid var(--line);padding:36px}
+  .r-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid var(--ink);padding-bottom:14px;margin-bottom:20px}
+  .r-head h2{font-family:'Space Grotesk',sans-serif;font-size:20px;margin:0}
+  .r-head .period{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--rust);text-align:right}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:#1a1a1a;border:1px solid #1a1a1a;margin-bottom:24px}
+  .kpi{background:#fff;padding:14px 16px}
+  .kpi .label{font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#888;margin:0 0 4px}
+  .kpi .value{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:500;margin:0}
+  .kpi .delta{font-size:11px;margin-top:3px;font-family:'IBM Plex Mono',monospace}
+  .kpi .delta.up{color:var(--good)}
+  .kpi .delta.down{color:var(--rust-dark)}
+  .section-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;margin:24px 0 10px;border-bottom:1px solid #e5e0d5;padding-bottom:6px}
+  table.rtable{width:100%;border-collapse:collapse;margin-bottom:6px}
+  table.rtable th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:#888;padding:6px 4px;border-bottom:1px solid #1a1a1a}
+  table.rtable td{padding:7px 4px;font-size:13px;border-bottom:1px solid #f0ede4}
+  table.rtable td.num{font-family:'IBM Plex Mono',monospace;text-align:right}
+  table.rtable tr.total td{font-weight:600;border-top:1px solid #1a1a1a;border-bottom:none}
+  .note{font-size:11px;color:#999;margin:6px 0 0;line-height:1.5}
+
+  @media print{
+    body{background:#fff}
+    .no-print{display:none !important}
+    .wrap{max-width:none;padding:0}
+    #report{border:none;padding:0}
+  }
+</style>
+</head>
+<body>
+
+<div id="lock-screen" class="lock-screen">
+  <div class="lock-card">
+    <p class="lock-title">Enter tracker PIN</p>
+    <p class="lock-sub">Uses the same Owner or Viewer PIN as your sales tracker, since this reads that same data.</p>
+    <input type="password" id="lock-input" inputmode="numeric" maxlength="6" placeholder="PIN">
+    <button type="button" id="lock-submit">Unlock</button>
+    <p class="status" id="lock-status"></p>
+  </div>
+</div>
+
+<div class="wrap no-print" id="app-content" style="display:none">
+  <header>
+    <div>
+      <h1>Imara Precast and Concrete</h1>
+      <p>Monthly report</p>
+    </div>
+    <button type="button" class="btn-ghost" id="lock-btn">Lock</button>
+  </header>
+
+  <div class="control-row">
+    <label style="font-size:12px;color:var(--ink-soft)">Month:</label>
+    <select id="month-select"></select>
+    <button type="button" class="btn-primary" id="print-btn">Print / Save as PDF</button>
+  </div>
+</div>
+
+<div class="wrap" id="report-wrap" style="display:none">
+  <div id="report"></div>
+</div>
+
+<script>
+const AUTH_KEY = 'imara_offline_auth';
+const SALES_KEY = 'imara_offline_entries';
+const DELIVERY_KEY = 'imara_delivery_entries';
+
+let salesEntries = [];
+let deliveryEntries = [];
+
+function fmt(n){ return 'KES ' + Math.round(n).toLocaleString('en-KE'); }
+function lsGet(key){ try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : null; }catch(e){ return null; } }
+
+document.getElementById('lock-submit').addEventListener('click', () => {
+  const pin = document.getElementById('lock-input').value.trim();
+  const statusEl = document.getElementById('lock-status');
+  const auth = lsGet(AUTH_KEY);
+  if(!auth){ statusEl.textContent = 'No tracker PIN found on this device yet — set up your sales tracker first, then come back here.'; return; }
+  const validPins = (auth.ownerPins || []).concat(auth.viewerPin ? [auth.viewerPin] : []);
+  if(!validPins.includes(pin)){ statusEl.textContent = 'Incorrect PIN.'; return; }
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('app-content').style.display = 'block';
+  init();
+});
+document.getElementById('lock-btn').addEventListener('click', () => location.reload());
+
+function init(){
+  salesEntries = lsGet(SALES_KEY) || [];
+  deliveryEntries = lsGet(DELIVERY_KEY) || [];
+
+  const months = Array.from(new Set([
+    ...salesEntries.map(e => e.date.slice(0,7)),
+    ...deliveryEntries.map(e => e.date.slice(0,7))
+  ])).sort().reverse();
+
+  const sel = document.getElementById('month-select');
+  if(months.length === 0){
+    sel.innerHTML = '<option>No data yet</option>';
+    document.getElementById('report-wrap').style.display = 'block';
+    document.getElementById('report').outerHTML = '<div class="empty">No sales, cost, or delivery entries found on this device yet. Log some data in the tracker or delivery log first, then reload this report.</div>';
+    return;
+  }
+  sel.innerHTML = months.map(m => '<option value="' + m + '">' + m + '</option>').join('');
+  sel.addEventListener('change', () => buildReport(sel.value, months));
+  buildReport(months[0], months);
+}
+
+function monthLabel(m){
+  const [y, mo] = m.split('-');
+  const names = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return names[Number(mo)-1] + ' ' + y;
+}
+
+function prevMonthKey(m){
+  const [y, mo] = m.split('-').map(Number);
+  const d = new Date(y, mo - 2, 1);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+}
+
+function sumByKey(list, filterFn, keyFn, amountFn){
+  const map = {};
+  list.filter(filterFn).forEach(e => {
+    const k = keyFn(e);
+    map[k] = (map[k] || 0) + amountFn(e);
+  });
+  return map;
+}
+
+function monthStats(m){
+  const sInMonth = salesEntries.filter(e => e.date.slice(0,7) === m);
+  const dInMonth = deliveryEntries.filter(e => e.date.slice(0,7) === m);
+  const revenue = sInMonth.filter(e => e.type === 'sale').reduce((s,e) => s + e.amount, 0);
+  const costs = sInMonth.filter(e => e.type === 'cost').reduce((s,e) => s + e.amount, 0);
+  const delivRevenue = dInMonth.reduce((s,e) => s + e.fee, 0);
+  const delivCosts = dInMonth.reduce((s,e) => s + e.fuel + e.other, 0);
+  return {
+    revenue, costs, delivRevenue, delivCosts,
+    netCore: revenue - costs,
+    netDeliv: delivRevenue - delivCosts,
+    grandRevenue: revenue + delivRevenue,
+    grandCosts: costs + delivCosts,
+    grandNet: (revenue + delivRevenue) - (costs + delivCosts),
+    byProduct: sumByKey(sInMonth, e => e.type === 'sale', e => e.product, e => e.amount),
+    byCategory: sumByKey(sInMonth, e => e.type === 'cost', e => e.category, e => e.amount),
+    tripCount: dInMonth.length
+  };
+}
+
+function deltaHtml(curr, prev){
+  if(prev === 0 || prev === undefined) return '';
+  const pct = ((curr - prev) / Math.abs(prev)) * 100;
+  const cls = pct >= 0 ? 'up' : 'down';
+  const arrow = pct >= 0 ? '▲' : '▼';
+  return '<div class="delta ' + cls + '">' + arrow + ' ' + Math.abs(pct).toFixed(0) + '% vs last month</div>';
+}
+
+function buildReport(m, months){
+  const curr = monthStats(m);
+  const prevKey = prevMonthKey(m);
+  const hasPrev = months.includes(prevKey);
+  const prev = hasPrev ? monthStats(prevKey) : null;
+
+  let productRows = Object.entries(curr.byProduct).map(([k,v]) => '<tr><td>' + k + '</td><td class="num">' + fmt(v) + '</td></tr>').join('');
+  if(!productRows) productRows = '<tr><td colspan="2" style="color:#999">No sales this month</td></tr>';
+
+  let costRows = Object.entries(curr.byCategory).map(([k,v]) => '<tr><td>' + k + '</td><td class="num">' + fmt(v) + '</td></tr>').join('');
+  if(!costRows) costRows = '<tr><td colspan="2" style="color:#999">No costs logged this month</td></tr>';
+
+  const html = `
+    <div class="r-head">
+      <div>
+        <h2>Imara Precast and Concrete</h2>
+        <div style="font-size:12px;color:#666;margin-top:2px">Monthly performance report</div>
+      </div>
+      <div class="period">${monthLabel(m)}</div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><p class="label">Total revenue</p><p class="value">${fmt(curr.grandRevenue)}</p>${prev ? deltaHtml(curr.grandRevenue, prev.grandRevenue) : ''}</div>
+      <div class="kpi"><p class="label">Total costs</p><p class="value">${fmt(curr.grandCosts)}</p>${prev ? deltaHtml(curr.grandCosts, prev.grandCosts) : ''}</div>
+      <div class="kpi"><p class="label">Net profit</p><p class="value">${fmt(curr.grandNet)}</p>${prev ? deltaHtml(curr.grandNet, prev.grandNet) : ''}</div>
+      <div class="kpi"><p class="label">Deliveries</p><p class="value">${curr.tripCount}</p></div>
+    </div>
+
+    <div class="section-title">Revenue by product</div>
+    <table class="rtable"><tbody>${productRows}<tr class="total"><td>Total sales revenue</td><td class="num">${fmt(curr.revenue)}</td></tr></tbody></table>
+
+    <div class="section-title">Costs by category</div>
+    <table class="rtable"><tbody>${costRows}<tr class="total"><td>Total operating costs</td><td class="num">${fmt(curr.costs)}</td></tr></tbody></table>
+
+    <div class="section-title">Delivery operations</div>
+    <table class="rtable"><tbody>
+      <tr><td>Delivery revenue</td><td class="num">${fmt(curr.delivRevenue)}</td></tr>
+      <tr><td>Fuel and trip costs</td><td class="num">${fmt(curr.delivCosts)}</td></tr>
+      <tr class="total"><td>Net delivery margin</td><td class="num">${fmt(curr.netDeliv)}</td></tr>
+    </tbody></table>
+    <p class="note">If delivery fees were already included in your sale amounts above, exclude this section from the grand total to avoid double-counting.</p>
+
+    <div class="section-title">Summary</div>
+    <table class="rtable"><tbody>
+      <tr class="total"><td>Total revenue (sales + delivery)</td><td class="num">${fmt(curr.grandRevenue)}</td></tr>
+      <tr class="total"><td>Total costs (operating + delivery)</td><td class="num">${fmt(curr.grandCosts)}</td></tr>
+      <tr class="total"><td>Net profit</td><td class="num">${fmt(curr.grandNet)}</td></tr>
+    </tbody></table>
+  `;
+
+  document.getElementById('report').innerHTML = html;
+  document.getElementById('report-wrap').style.display = 'block';
+}
+
+document.getElementById('print-btn').addEventListener('click', () => window.print());
+</script>
+</body>
+</html>
